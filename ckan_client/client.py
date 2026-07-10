@@ -40,20 +40,18 @@ def check_kwargs(given_kwargs: dict | None, allowed_kwargs: dict) -> None:
         return
     if any(k not in allowed_kwargs for k in given_kwargs):
         raise ValueError(f"Allowed kwargs are: {', '.join(allowed_kwargs.keys())}")
-    if any(
-        k not in given_kwargs
-        for k in [arg for arg, doc in allowed_kwargs.items() if not doc["optional"]]
-    ):
-        raise ValueError(
-            f"The following kwargs are mandatory: {', '.join(arg for arg, doc in allowed_kwargs.items() if not doc['optional'])}"
-        )
+    # the optional fields seem off, like plugin_data for package is not optional (but it's possible to create a package without specifying it)
+#    if any(
+#        k not in given_kwargs
+#        for k in [arg for arg, doc in allowed_kwargs.items() if not doc["optional"]]
+#    ):
+#        raise ValueError(
+#            f"The following kwargs are mandatory: {', '.join(arg for arg, doc in allowed_kwargs.items() if not doc['optional'])}"
+#        )
 
 
 def create_method(obj: str, allowed_kwargs: dict, client: "CkanClient") -> Callable:
     def _m(**kwargs) -> "Package | Resource":
-        from .package import Package
-        from .resource import Resource
-
         check_kwargs(kwargs, allowed_kwargs)
         if client.verbose:
             logging.info(f"🆕 Creating a new {obj} with {kwargs}")
@@ -61,8 +59,10 @@ def create_method(obj: str, allowed_kwargs: dict, client: "CkanClient") -> Calla
         match obj:
             # slightly overkill but futureproof
             case "package":
+                from .package import Package
                 return Package(id=resp["id"], attrs=resp, _client=client)
             case "resource":
+                from .resource import Resource
                 return Resource(id=resp["id"], attrs=resp, _client=client)
             case _:
                 raise NotImplementedError
@@ -72,15 +72,14 @@ def create_method(obj: str, allowed_kwargs: dict, client: "CkanClient") -> Calla
 
 def obj_method(obj: str, allowed_kwargs: dict, client: "CkanClient") -> Callable:
     def _m(id: str, *, attrs: dict | None = None) -> "Package | Resource":
-        from .package import Package
-        from .resource import Resource
-
-        check_kwargs(attrs, allowed_kwargs)
+        check_kwargs(attrs, {k: v for k,v in allowed_kwargs.items() if k != "package_id"})
         match obj:
             # slightly overkill but futureproof
             case "package":
+                from .package import Package
                 return Package(id=id, attrs=attrs, _client=client)
             case "resource":
+                from .resource import Resource
                 return Resource(id=id, attrs=attrs, _client=client)
             case _:
                 raise NotImplementedError
