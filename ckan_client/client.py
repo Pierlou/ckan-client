@@ -5,6 +5,7 @@ import niquests
 
 
 def build_params(doctring: str) -> dict:
+    # building a clean dict of valid kwargs with details (type, description, optional) from the fetched docstring
     param_pattern = re.compile(r":param (\w+): (.*?)(?=\n\s*:param|\n\s*:type|\Z)", re.DOTALL)
     type_pattern = re.compile(r":type (\w+): (.*?)(?=\n\s*:param|\n\s*:type|\Z)", re.DOTALL)
     params = param_pattern.findall(doctring)
@@ -43,15 +44,18 @@ class CkanClient:
         "resource",
     }
 
-    def __init__(self, base_url: str, apikey : str | None = None):
+    def __init__(self, base_url: str, apikey : str | None = None, *, verbose: bool = True):
+        self._authenticated = apikey is not None
         self.rckan = RemoteCKAN(base_url, apikey=apikey)
         self._obj_params = {}
         for obj in self._obj:
+            # fetching the valid kwargs from the doc endpoints
             self._obj_params[obj] = build_params(
                 niquests.get(
                     f"{base_url}/api/3/action/help_show?name={obj}_create"
                 ).json()["result"]
             )
+            # re-implements the object creation with a stricter kwargs check
             setattr(
                 self,
                 f"{obj}_create",
