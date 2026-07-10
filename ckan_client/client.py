@@ -41,14 +41,14 @@ def check_kwargs(given_kwargs: dict, allowed_kwargs: dict) -> None:
         )
 
 
-def create_method(obj: str, allowed_kwargs: dict, client: CkanClient) -> Callable:
+def create_method(obj: str, allowed_kwargs: dict, client: "CkanClient") -> Callable:
     def _m(**kwargs) -> "Package | Resource":
         from .package import Package
         from .resource import Resource
         check_kwargs(kwargs, allowed_kwargs)
         if client.verbose:
             logging.info(f"🆕 Creating a new {obj} with {kwargs}")
-        resp = getattr(rckan.action, f"{obj}_create")(**kwargs)
+        resp = getattr(client.rckan.action, f"{obj}_create")(**kwargs)
         match obj:
             # slightly overkill but futureproof
             case "package":
