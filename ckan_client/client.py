@@ -1,10 +1,10 @@
-from importlib.metadata import version
 import logging
 import re
+from importlib.metadata import version
 from typing import TYPE_CHECKING, Callable
 
-from ckanapi import RemoteCKAN
 import niquests
+from ckanapi import RemoteCKAN
 
 
 if TYPE_CHECKING:
