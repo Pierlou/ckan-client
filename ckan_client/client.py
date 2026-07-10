@@ -1,4 +1,5 @@
 from importlib.metadata import version
+import logging
 import re
 
 from ckanapi import RemoteCKAN
@@ -34,9 +35,11 @@ def check_kwargs(given_kwargs: dict, allowed_kwargs: dict) -> None:
         )
 
 
-def create_method(obj: str, allowed_kwargs: dict, rckan: RemoteCKAN):
+def create_method(obj: str, allowed_kwargs: dict, rckan: RemoteCKAN, verbose: bool):
     def _m(**kwargs):
         check_kwargs(kwargs, allowed_kwargs)
+        if verbose:
+            logging.info(f"🆕 Creating a new {obj} with {kwargs}")
         getattr(rckan.action, f"{obj}_create")(**kwargs)
     return _m
 
@@ -51,6 +54,7 @@ class CkanClient:
         self._authenticated = apikey is not None
         self.rckan = RemoteCKAN(base_url, apikey=apikey, user_agent=user_agent)
         self._obj_params = {}
+        self.verbose = verbose
         for obj in self._obj:
             # fetching the valid kwargs from the doc endpoints
             self._obj_params[obj] = build_params(
@@ -62,5 +66,5 @@ class CkanClient:
             setattr(
                 self,
                 f"{obj}_create",
-                create_method(obj, self._obj_params[obj], self.rckan),
+                create_method(obj, self._obj_params[obj], self.rckan, verbose=self.verbose),
             )
