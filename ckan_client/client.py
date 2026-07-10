@@ -6,7 +6,6 @@ from typing import TYPE_CHECKING, Callable
 import niquests
 from ckanapi import RemoteCKAN
 
-
 if TYPE_CHECKING:
     from .package import Package
     from .resource import Resource
