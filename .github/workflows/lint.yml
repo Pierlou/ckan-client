@@ -8,11 +8,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: check
+    - uses: actions/checkout@v4
+    - name: ruff check
       uses: astral-sh/ruff-action@v3
       with:
         args: check --extend-select I .
-    - name: format
+    - name: ruff format
       uses: astral-sh/ruff-action@v3
       with:
         args: format .
