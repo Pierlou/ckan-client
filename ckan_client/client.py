@@ -72,16 +72,16 @@ def create_method(obj: str, allowed_kwargs: dict, client: "CkanClient") -> Calla
 
 def obj_method(obj: str, allowed_kwargs: dict, client: "CkanClient") -> Callable:
     def _m(id: str, *, attrs: dict | None = None) -> "Package | Resource":
-        from package import Package
-        from resource import Resource
+        from .package import Package
+        from .resource import Resource
 
         check_kwargs(attrs, allowed_kwargs)
         match obj:
             # slightly overkill but futureproof
             case "package":
-                return Package(id=resp["id"], attrs=attrs, _client=client)
+                return Package(id=id, attrs=attrs, _client=client)
             case "resource":
-                return Resource(id=resp["id"], attrs=attrs, _client=client)
+                return Resource(id=id, attrs=attrs, _client=client)
             case _:
                 raise NotImplementedError
 
