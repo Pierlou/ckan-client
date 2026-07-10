@@ -40,12 +40,12 @@ def check_kwargs(given_kwargs: dict, allowed_kwargs: dict) -> None:
         )
 
 
-def create_method(obj: str, allowed_kwargs: dict, client: CkanClient, verbose: bool) -> Callable:
+def create_method(obj: str, allowed_kwargs: dict, client: CkanClient) -> Callable:
     def _m(**kwargs) -> "Package | Resource":
         from .package import Package
         from .resource import Resource
         check_kwargs(kwargs, allowed_kwargs)
-        if verbose:
+        if client.verbose:
             logging.info(f"🆕 Creating a new {obj} with {kwargs}")
         resp = getattr(rckan.action, f"{obj}_create")(**kwargs)
         match obj:
@@ -81,5 +81,5 @@ class CkanClient:
             setattr(
                 self,
                 f"{obj}_create",
-                create_method(obj=obj, allowed_kwargs=self._obj_params[obj], client=self, verbose=self.verbose),
+                create_method(obj=obj, allowed_kwargs=self._obj_params[obj], client=self),
             )
