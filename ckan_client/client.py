@@ -35,7 +35,9 @@ def build_params(doctring: str) -> dict:
     return result
 
 
-def check_kwargs(given_kwargs: dict, allowed_kwargs: dict) -> None:
+def check_kwargs(given_kwargs: dict | None, allowed_kwargs: dict) -> None:
+    if given_kwargs is None:
+        return
     if any(k not in allowed_kwargs for k in given_kwargs):
         raise ValueError(f"Allowed kwargs are: {', '.join(allowed_kwargs.keys())}")
     if any(
@@ -68,6 +70,24 @@ def create_method(obj: str, allowed_kwargs: dict, client: "CkanClient") -> Calla
     return _m
 
 
+def obj_method(obj: str, allowed_kwargs: dict, client: "CkanClient") -> Callable:
+    def _m(id: str, *, attrs: dict | None = None) -> "Package | Resource":
+        from package import Package
+        from resource import Resource
+
+        check_kwargs(attrs, allowed_kwargs)
+        match obj:
+            # slightly overkill but futureproof
+            case "package":
+                return Package(id=resp["id"], attrs=attrs, _client=client)
+            case "resource":
+                return Resource(id=resp["id"], attrs=attrs, _client=client)
+            case _:
+                raise NotImplementedError
+
+    return _m
+
+
 class CkanClient:
     _obj: set[str] = {
         "package",
@@ -82,6 +102,8 @@ class CkanClient:
         user_agent: str = USER_AGENT,
         verbose: bool = True,
     ):
+        from .package import Package
+        from .resource import Resource
         self._authenticated = apikey is not None
         self.rckan = RemoteCKAN(base_url, apikey=apikey, user_agent=user_agent)
         self._obj_params = {}
@@ -98,6 +120,13 @@ class CkanClient:
                 self,
                 f"{obj}_create",
                 create_method(
+                    obj=obj, allowed_kwargs=self._obj_params[obj], client=self
+                ),
+            )
+            setattr(
+                self,
+                obj,
+                obj_method(
                     obj=obj, allowed_kwargs=self._obj_params[obj], client=self
                 ),
             )
