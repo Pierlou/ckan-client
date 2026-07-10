@@ -1,3 +1,5 @@
+import logging
+
 from .client import CkanClient, check_kwargs
 
 
@@ -30,8 +32,11 @@ class BaseObject:
   def patch(self, payload: dict):
     assert_auth(self._client)
     check_kwargs(payload, self._client._obj_params[self._name])
+    if self._client.verbose:
+        logging.info(f"🔁 Putting {self.id} with {payload}")
     return getattr(self._client.rckan.action, f"{self._name}_patch")(id=self.id, **payload)
 
   def delete(self):
+    if self._client.verbose:
+        logging.info(f"🚮 Deleting {self.id}")
     getattr(self._client.rckan.action, f"{self._name}_delete")(id=self.id)
-    
