@@ -1,9 +1,14 @@
 from importlib.metadata import version
 import logging
 import re
+from typing import TYPE_CHECKING, Callable
 
 from ckanapi import RemoteCKAN
 import niquests
+
+if TYPE_CHECKING:
+    from .package import Package
+    from .resource import Resource
 
 USER_AGENT = f"ckan-client/{version('ckan-client')}"
 
@@ -35,12 +40,22 @@ def check_kwargs(given_kwargs: dict, allowed_kwargs: dict) -> None:
         )
 
 
-def create_method(obj: str, allowed_kwargs: dict, rckan: RemoteCKAN, verbose: bool):
-    def _m(**kwargs):
+def create_method(obj: str, allowed_kwargs: dict, client: CkanClient, verbose: bool) -> Callable:
+    def _m(**kwargs) -> "Package | Resource":
+        from .package import Package
+        from .resource import Resource
         check_kwargs(kwargs, allowed_kwargs)
         if verbose:
             logging.info(f"🆕 Creating a new {obj} with {kwargs}")
-        getattr(rckan.action, f"{obj}_create")(**kwargs)
+        resp = getattr(rckan.action, f"{obj}_create")(**kwargs)
+        match obj:
+            # slightly overkill but futureproof
+            case "package":
+                return Package(id=resp["id"], attrs=resp, _client=client)
+            case "resource":
+                return Resource(id=resp["id"], attrs=resp, _client=client)
+            case _:
+                raise NotImplementedError
     return _m
 
 
@@ -66,5 +81,5 @@ class CkanClient:
             setattr(
                 self,
                 f"{obj}_create",
-                create_method(obj, self._obj_params[obj], self.rckan, verbose=self.verbose),
+                create_method(obj=obj, allowed_kwargs=self._obj_params[obj], client=self, verbose=self.verbose),
             )
