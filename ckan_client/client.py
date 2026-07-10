@@ -102,8 +102,6 @@ class CkanClient:
         user_agent: str = USER_AGENT,
         verbose: bool = True,
     ):
-        from .package import Package
-        from .resource import Resource
         self._authenticated = apikey is not None
         self.rckan = RemoteCKAN(base_url, apikey=apikey, user_agent=user_agent)
         self._obj_params = {}
