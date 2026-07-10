@@ -1,7 +1,10 @@
+from importlib.metadata import version
 import re
 
 from ckanapi import RemoteCKAN
 import niquests
+
+USER_AGENT = f"ckan-client/{version('ckan-client')}"
 
 
 def build_params(doctring: str) -> dict:
@@ -44,9 +47,9 @@ class CkanClient:
         "resource",
     }
 
-    def __init__(self, base_url: str, apikey : str | None = None, *, verbose: bool = True):
+    def __init__(self, base_url: str, apikey : str | None = None, *, user_agent: str = USER_AGENT, verbose: bool = True):
         self._authenticated = apikey is not None
-        self.rckan = RemoteCKAN(base_url, apikey=apikey)
+        self.rckan = RemoteCKAN(base_url, apikey=apikey, user_agent=user_agent)
         self._obj_params = {}
         for obj in self._obj:
             # fetching the valid kwargs from the doc endpoints
