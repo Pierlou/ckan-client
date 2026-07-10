@@ -37,6 +37,7 @@ class BaseObject:
     return getattr(self._client.rckan.action, f"{self._name}_patch")(id=self.id, **payload)
 
   def delete(self):
+    assert_auth(self._client)
     if self._client.verbose:
         logging.info(f"🚮 Deleting {self.id}")
     getattr(self._client.rckan.action, f"{self._name}_delete")(id=self.id)
