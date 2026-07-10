@@ -2,6 +2,7 @@ name: Lint code
 
 on:
   push:
+  pull_request:
 
 jobs:
   build:
@@ -16,4 +17,4 @@ jobs:
     - name: ruff format
       uses: astral-sh/ruff-action@v3
       with:
-        args: format .
+        args: format --check .
