@@ -33,5 +33,5 @@ res = ckanc.resource("e7a249c8-cfc9-4608-b5d2-ef0541255ba9")  # this creates an 
 Then you can access each object's properties:
 ```python
 print(f"The package {pack.title} is attached to {pack.organization['title']}")
-print(f"The resource {res.name} was craated at {res.created} and contains {res.format} data")
+print(f"The resource {res.name} was created at {res.created} and contains {res.format} data")
 ```
