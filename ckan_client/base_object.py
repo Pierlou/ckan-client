@@ -16,24 +16,35 @@ class BaseObject:
   _attrs: dict | None
   _deleted: bool = False
 
-  def __init__(self, id: str, *, _client: CkanClient, attrs: dict | None = None, fetch: bool = True):
+  def __init__(self, id: str, *, _client: CkanClient, _from_reponse: dict | None = None):
     if self.__class__.__name__ == "BaseObject":
-        raise TypeError("BaseObject is an abstract class, it cannot be instanciated")
+      raise TypeError("BaseObject is an abstract class, it cannot be instanciated")
     self.id = id
     self._client = _client
     self._name = self.__class__.__name__.lower()
-    self._attrs = (
-      attrs
-      if attrs is not None or not fetch
-      else getattr(self._client.rckan.action, f"{self._name}_show")(id=self.id)
-    )
+    if _from_reponse is not None:
+      self._attrs = _from_reponse
+    elif self._client.fetch:
+      self._fetch_metadata()
+
+  def _fetch_metadata(self):
+    # not the best if the object is updated by another means in between but fair enough
+    if self._attrs is None:
+      self._attrs = getattr(self._client.rckan.action, f"{self._name}_show")(id=self.id)
+
+  def _raise_if_deleted(self):
+    if self.deleted:
+      raise TypeError(f"This {self._name} has been deleted")
 
   def __getattr__(self, value: str):
-    if self.deleted:
-        raise TypeError(f"This {self._name} has been deleted")
+    self._raise_if_deleted()
+    if value in dir(self):
+        return getattr(self, value)
+    self._fetch_metadata()
     return self._attrs[value]
 
   def __repr__(self) -> str:
+    self._raise_if_deleted()
     return str(self._attrs)
 
   def patch(self, payload: dict) -> None:
