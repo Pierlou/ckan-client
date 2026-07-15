@@ -104,10 +104,10 @@ def create_method(obj: str, allowed_kwargs: dict, client: "CkanClient") -> Calla
             # slightly overkill but futureproof
             case "package":
                 from .package import Package
-                return Package(id=resp["id"], _from_reponse=resp, _client=client)
+                return Package(id=resp["id"], _from_response=resp, _client=client)
             case "resource":
                 from .resource import Resource
-                return Resource(id=resp["id"], _from_reponse=resp, _client=client)
+                return Resource(id=resp["id"], _from_response=resp, _client=client)
             case _:
                 raise NotImplementedError
 
@@ -115,16 +115,16 @@ def create_method(obj: str, allowed_kwargs: dict, client: "CkanClient") -> Calla
 
 
 def obj_method(obj: str, allowed_kwargs: dict, client: "CkanClient") -> Callable:
-    def _m(id: str, *, _from_reponse: dict | None = None) -> "Package | Resource":
-        check_kwargs(_from_reponse, {k: v for k,v in allowed_kwargs.items() if k != "package_id"})
+    def _m(id: str, *, _from_response: dict | None = None) -> "Package | Resource":
+        check_kwargs(_from_response, {k: v for k,v in allowed_kwargs.items() if k != "package_id"})
         match obj:
             # slightly overkill but futureproof
             case "package":
                 from .package import Package
-                return Package(id=id, _from_reponse=_from_reponse, _client=client)
+                return Package(id=id, _from_response=_from_response, _client=client)
             case "resource":
                 from .resource import Resource
-                return Resource(id=id, _from_reponse=_from_reponse, _client=client)
+                return Resource(id=id, _from_response=_from_response, _client=client)
             case _:
                 raise NotImplementedError
 
