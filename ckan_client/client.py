@@ -15,12 +15,8 @@ USER_AGENT = f"ckan-client/{version('ckan-client')}"
 
 def build_params(doctring: str) -> dict:
     # building a clean dict of valid kwargs with details (type, description, optional) from the fetched docstring
-    param_pattern = re.compile(
-        r":param (\w+): (.*?)(?=\n\s*:param|\n\s*:type|\Z)", re.DOTALL
-    )
-    type_pattern = re.compile(
-        r":type (\w+): (.*?)(?=\n\s*:param|\n\s*:type|\Z)", re.DOTALL
-    )
+    param_pattern = re.compile(r":param (\w+): (.*?)(?=\n\s*:param|\n\s*:type|\Z)", re.DOTALL)
+    type_pattern = re.compile(r":type (\w+): (.*?)(?=\n\s*:param|\n\s*:type|\Z)", re.DOTALL)
     params = param_pattern.findall(doctring)
     types = type_pattern.findall(doctring)
     result = {}
@@ -41,6 +37,8 @@ def check_kwargs(given_kwargs: dict | None, allowed_kwargs: dict) -> None:
     if any(k not in allowed_kwargs for k in given_kwargs):
         raise ValueError(f"Allowed kwargs are: {', '.join(allowed_kwargs.keys())}")
     # the optional fields seem off, like plugin_data for package is not optional (but it's possible to create a package without specifying it)
+
+
 #    if any(
 #        k not in given_kwargs
 #        for k in [arg for arg, doc in allowed_kwargs.items() if not doc["optional"]]
@@ -73,24 +71,20 @@ class CkanClient:
         for obj in self._obj:
             # fetching the valid kwargs from the doc endpoints
             self._obj_params[obj] = build_params(
-                requests.get(
-                    f"{base_url}/api/3/action/help_show?name={obj}_create"
-                ).json()["result"]
+                requests.get(f"{base_url}/api/3/action/help_show?name={obj}_create").json()[
+                    "result"
+                ]
             )
             # re-implements the object creation with a stricter kwargs check
             setattr(
                 self,
                 f"{obj}_create",
-                create_method(
-                    obj=obj, allowed_kwargs=self._obj_params[obj], client=self
-                ),
+                create_method(obj=obj, allowed_kwargs=self._obj_params[obj], client=self),
             )
             setattr(
                 self,
                 obj,
-                obj_method(
-                    obj=obj, allowed_kwargs=self._obj_params[obj], client=self
-                ),
+                obj_method(obj=obj, allowed_kwargs=self._obj_params[obj], client=self),
             )
 
 
@@ -104,9 +98,11 @@ def create_method(obj: str, allowed_kwargs: dict, client: "CkanClient") -> Calla
             # slightly overkill but futureproof
             case "package":
                 from .package import Package
+
                 return Package(id=resp["id"], _from_response=resp, _client=client)
             case "resource":
                 from .resource import Resource
+
                 return Resource(id=resp["id"], _from_response=resp, _client=client)
             case _:
                 raise NotImplementedError
@@ -116,14 +112,16 @@ def create_method(obj: str, allowed_kwargs: dict, client: "CkanClient") -> Calla
 
 def obj_method(obj: str, allowed_kwargs: dict, client: "CkanClient") -> Callable:
     def _m(id: str, *, _from_response: dict | None = None) -> "Package | Resource":
-        check_kwargs(_from_response, {k: v for k,v in allowed_kwargs.items() if k != "package_id"})
+        check_kwargs(_from_response, {k: v for k, v in allowed_kwargs.items() if k != "package_id"})
         match obj:
             # slightly overkill but futureproof
             case "package":
                 from .package import Package
+
                 return Package(id=id, _from_response=_from_response, _client=client)
             case "resource":
                 from .resource import Resource
+
                 return Resource(id=id, _from_response=_from_response, _client=client)
             case _:
                 raise NotImplementedError
