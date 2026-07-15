@@ -4,7 +4,8 @@ dynamic = ["version"]
 description = "Higher level overlay around `ckanapi`"
 authors = []
 dependencies = [
-    "ckanapi>=4.11,5",
+    "requests>=2.34.0,<3",
+    "ckanapi>=4.11,<5",
 ]
 requires-python = ">=3.10,<3.15"
 license = "MIT"
