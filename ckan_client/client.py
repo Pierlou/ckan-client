@@ -50,43 +50,6 @@ def check_kwargs(given_kwargs: dict | None, allowed_kwargs: dict) -> None:
 #        )
 
 
-def create_method(obj: str, allowed_kwargs: dict, client: "CkanClient") -> Callable:
-    def _m(**kwargs) -> "Package | Resource":
-        check_kwargs(kwargs, allowed_kwargs)
-        if client.verbose:
-            logging.info(f"🆕 Creating a new {obj} with {kwargs}")
-        resp = getattr(client.rckan.action, f"{obj}_create")(**kwargs)
-        match obj:
-            # slightly overkill but futureproof
-            case "package":
-                from .package import Package
-                return Package(id=resp["id"], attrs=resp, _client=client)
-            case "resource":
-                from .resource import Resource
-                return Resource(id=resp["id"], attrs=resp, _client=client)
-            case _:
-                raise NotImplementedError
-
-    return _m
-
-
-def obj_method(obj: str, allowed_kwargs: dict, client: "CkanClient") -> Callable:
-    def _m(id: str, *, attrs: dict | None = None) -> "Package | Resource":
-        check_kwargs(attrs, {k: v for k,v in allowed_kwargs.items() if k != "package_id"})
-        match obj:
-            # slightly overkill but futureproof
-            case "package":
-                from .package import Package
-                return Package(id=id, attrs=attrs, _client=client)
-            case "resource":
-                from .resource import Resource
-                return Resource(id=id, attrs=attrs, _client=client)
-            case _:
-                raise NotImplementedError
-
-    return _m
-
-
 class CkanClient:
     _obj: set[str] = {
         "package",
@@ -100,15 +63,17 @@ class CkanClient:
         *,
         user_agent: str = USER_AGENT,
         verbose: bool = True,
+        fetch: bool = True,  # whether or not to request metadata on object instanciation, useful when you only want to patch/delete
     ):
         self._authenticated = apikey is not None
         self.rckan = RemoteCKAN(base_url, apikey=apikey, user_agent=user_agent)
         self._obj_params = {}
         self.verbose = verbose
+        self.fetch = fetch
         for obj in self._obj:
             # fetching the valid kwargs from the doc endpoints
             self._obj_params[obj] = build_params(
-                niquests.get(
+                requests.get(
                     f"{base_url}/api/3/action/help_show?name={obj}_create"
                 ).json()["result"]
             )
@@ -127,3 +92,40 @@ class CkanClient:
                     obj=obj, allowed_kwargs=self._obj_params[obj], client=self
                 ),
             )
+
+
+def create_method(obj: str, allowed_kwargs: dict, client: "CkanClient") -> Callable:
+    def _m(**kwargs) -> "Package | Resource":
+        check_kwargs(kwargs, allowed_kwargs)
+        if client.verbose:
+            logging.info(f"🆕 Creating a new {obj} with {kwargs}")
+        resp = getattr(client.rckan.action, f"{obj}_create")(**kwargs)
+        match obj:
+            # slightly overkill but futureproof
+            case "package":
+                from .package import Package
+                return Package(id=resp["id"], _from_reponse=resp, _client=client)
+            case "resource":
+                from .resource import Resource
+                return Resource(id=resp["id"], _from_reponse=resp, _client=client)
+            case _:
+                raise NotImplementedError
+
+    return _m
+
+
+def obj_method(obj: str, allowed_kwargs: dict, client: "CkanClient") -> Callable:
+    def _m(id: str, *, _from_reponse: dict | None = None) -> "Package | Resource":
+        check_kwargs(_from_reponse, {k: v for k,v in allowed_kwargs.items() if k != "package_id"})
+        match obj:
+            # slightly overkill but futureproof
+            case "package":
+                from .package import Package
+                return Package(id=id, _from_reponse=_from_reponse, _client=client)
+            case "resource":
+                from .resource import Resource
+                return Resource(id=id, _from_reponse=_from_reponse, _client=client)
+            case _:
+                raise NotImplementedError
+
+    return _m
