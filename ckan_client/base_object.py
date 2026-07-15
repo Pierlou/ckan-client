@@ -41,6 +41,10 @@ class BaseObject:
     if value in dir(self):
         return getattr(self, value)
     self._fetch_metadata()
+    if value not in self._attrs:
+        raise AttributeError(
+            f"`{value}` is not a valid {self._name} attribute. The available attributes are: {list(self._attrs.keys())}"
+        )
     return self._attrs[value]
 
   def __repr__(self) -> str:
