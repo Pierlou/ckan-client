@@ -7,6 +7,7 @@ import requests
 from ckanapi import RemoteCKAN
 
 if TYPE_CHECKING:
+    from .organization import Organization
     from .package import Package
     from .resource import Resource
 

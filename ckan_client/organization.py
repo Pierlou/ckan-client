@@ -1,9 +1,14 @@
+from typing import TYPE_CHECKING
+
 from .base_object import BaseObject
+
+if TYPE_CHECKING:
+    from .package import Package
 
 
 class Organization(BaseObject):
     @property
-    def packages(self):
+    def packages(self) -> "list[Package]":
         from .package import Package
 
         self._fetch_metadata()
