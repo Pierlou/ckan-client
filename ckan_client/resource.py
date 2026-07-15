@@ -8,6 +8,6 @@ class Resource(BaseObject):
 
         self._fetch_metadata()
         return Package(
-            id_self._attrs["package_id"],
+            id=self._attrs["package_id"],
             _client=self._client,
         )
