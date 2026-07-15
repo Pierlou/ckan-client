@@ -4,7 +4,6 @@ dynamic = ["version"]
 description = "Higher level overlay around `ckanapi`"
 authors = []
 dependencies = [
-    "niquests>=3.19.0,<4",
     "ckanapi>=4.11,5",
 ]
 requires-python = ">=3.10,<3.15"
