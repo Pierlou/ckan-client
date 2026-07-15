@@ -90,7 +90,7 @@ class CkanClient:
 
 
 def create_method(obj: str, allowed_kwargs: dict, client: "CkanClient") -> Callable:
-    def _m(**kwargs) -> "Package | Resource":
+    def _m(**kwargs) -> "Organization | Package | Resource":
         check_kwargs(kwargs, allowed_kwargs)
         if client.verbose:
             logging.info(f"🆕 Creating a new {obj} with {kwargs}")
@@ -116,7 +116,7 @@ def create_method(obj: str, allowed_kwargs: dict, client: "CkanClient") -> Calla
 
 
 def obj_method(obj: str, allowed_kwargs: dict, client: "CkanClient") -> Callable:
-    def _m(id: str, *, _from_response: dict | None = None) -> "Package | Resource":
+    def _m(id: str, *, _from_response: dict | None = None) -> "Organization | Package | Resource":
         check_kwargs(_from_response, {k: v for k, v in allowed_kwargs.items() if k != "package_id"})
         match obj:
             # slightly overkill but futureproof
