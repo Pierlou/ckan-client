@@ -22,16 +22,23 @@ ckanc = CkanClient(
 )
 ```
 
-2. Instanciate objects from their ids
+2. Instanciate objects from their ids (or names, though less recommended)
 
-This project currently implements two main objects: `Package` and `Resource`
+This project currently implements three main objects: `Package`, `Resource` and `Organization`
 ```python
-pack = ckanc.package("my_dataset_id")  # this creates an instance of Package
+pack = ckanc.package("my_dataset_name")  # this creates an instance of Package
 res = ckanc.resource("e7a249c8-cfc9-4608-b5d2-ef0541255ba9")  # this creates an instance of Resource
+org = ckanc.organization("my_org_name")  # this creates an instance of Organization
 ```
 
 Then you can access each object's properties:
 ```python
 print(f"The package {pack.title} is attached to {pack.organization['title']}")
 print(f"The resource {res.name} was created at {res.created} and contains {res.format} data")
+print(f"The organization {org.title} has {len(org.packages)} packages")
 ```
+
+These objects are accessible from one another:
+- a `Package` has the attributes `resources` (list of `Resource`) and `organization`
+- a `Resource` has the attribute `package`
+- an `Organization` has the attributes `packages` (list of `Package`)
