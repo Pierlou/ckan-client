@@ -16,14 +16,14 @@ class BaseObject:
   _attrs: dict | None
   _deleted: bool = False
 
-  def __init__(self, id: str, *, _client: CkanClient, _from_reponse: dict | None = None):
+  def __init__(self, id: str, *, _client: CkanClient, _from_response: dict | None = None):
     if self.__class__.__name__ == "BaseObject":
       raise TypeError("BaseObject is an abstract class, it cannot be instanciated")
     self.id = id
     self._client = _client
     self._name = self.__class__.__name__.lower()
-    if _from_reponse is not None:
-      self._attrs = _from_reponse
+    if _from_response is not None:
+      self._attrs = _from_response
     elif self._client.fetch:
       self._fetch_metadata()
 
