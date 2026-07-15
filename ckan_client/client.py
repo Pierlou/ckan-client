@@ -52,6 +52,7 @@ class CkanClient:
     _obj: set[str] = {
         "package",
         "resource",
+        "organization",
     }
 
     def __init__(
@@ -104,6 +105,10 @@ def create_method(obj: str, allowed_kwargs: dict, client: "CkanClient") -> Calla
                 from .resource import Resource
 
                 return Resource(id=resp["id"], _from_response=resp, _client=client)
+            case "organization":
+                from .organization import Organization
+
+                return Organization(id=resp["id"], _from_response=resp, _client=client)
             case _:
                 raise NotImplementedError
 
@@ -123,6 +128,10 @@ def obj_method(obj: str, allowed_kwargs: dict, client: "CkanClient") -> Callable
                 from .resource import Resource
 
                 return Resource(id=id, _from_response=_from_response, _client=client)
+            case "organization":
+                from .organization import Organization
+
+                return Organization(id=id, _from_response=_from_response, _client=client)
             case _:
                 raise NotImplementedError
 
