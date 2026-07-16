@@ -58,7 +58,7 @@ class CkanClient:
 
     def __init__(
         self,
-        base_url: str,
+        address: str,
         apikey: str | None = None,
         *,
         user_agent: str = USER_AGENT,
@@ -66,14 +66,14 @@ class CkanClient:
         fetch: bool = True,  # whether or not to request metadata on object instanciation, useful when you only want to patch/delete
     ):
         self._authenticated = apikey is not None
-        self.rckan = RemoteCKAN(base_url, apikey=apikey, user_agent=user_agent)
+        self.rckan = RemoteCKAN(address, apikey=apikey, user_agent=user_agent)
         self._obj_params = {}
         self.verbose = verbose
         self.fetch = fetch
         for obj in self._obj:
             # fetching the valid kwargs from the doc endpoints
             self._obj_params[obj] = build_params(
-                requests.get(f"{base_url}/api/3/action/help_show?name={obj}_create").json()[
+                requests.get(f"{address}/api/3/action/help_show?name={obj}_create").json()[
                     "result"
                 ]
             )
