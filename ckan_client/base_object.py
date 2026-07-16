@@ -34,7 +34,7 @@ class BaseObject:
             getattr(
                 self._client.rckan.action,
                 f"{object.__getattribute__(self, '_name')}_show",
-            )(id=object.__getattribute__(self, 'id'))
+            )(id=object.__getattribute__(self, "id")),
         )
 
     def _raise_if_deleted(self):
