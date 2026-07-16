@@ -3,7 +3,7 @@ from .package import Package
 from .resource import Resource
 
 __all__ = [
-  "CkanClient",
-  "Package",
-  "Resource",
+    "CkanClient",
+    "Package",
+    "Resource",
 ]
