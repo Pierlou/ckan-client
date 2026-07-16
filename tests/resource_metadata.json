@@ -1,0 +1,23 @@
+{
+    "cache_last_updated": null,
+    "cache_url": null,
+    "created": "2026-07-09T16:10:05.352163",
+    "datastore_active": false,
+    "datastore_contains_all_records_of_source_file": false,
+    "description": "extensive",
+    "format": "CSV",
+    "hash": "",
+    "id": "e7a249c8-cfc9-4608-b5d2-ef0541255ba9",
+    "last_modified": "2026-07-09T16:10:05.332206",
+    "metadata_modified": "2026-07-15T08:11:38.741459",
+    "mimetype": "text/csv",
+    "mimetype_inner": null,
+    "name": "A CSV file",
+    "package_id": "e585b3d4-3c5b-4b95-948e-6f6ec27e922a",
+    "position": 0,
+    "resource_type": null,
+    "size": 12,
+    "state": "active",
+    "url": "https://ckan.data.example.fr/dataset/e585b3d4-3c5b-4b95-948e-6f6ec27e922a/resource/e7a249c8-cfc9-4608-b5d2-ef0541255ba9/download/test.csv",
+    "url_type": "upload"
+}
