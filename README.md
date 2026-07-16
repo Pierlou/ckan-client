@@ -56,7 +56,7 @@ pack.patch({"description": "More detailed description", "notes": "Additional ins
 res.delete()
 ```
 
-## ?! Advanced features
+## ⚡ Advanced features
 
 Upon client creation, additional arguments can be used:
 - `user_agent`: to set a custom user-agent (defaults to a version specific user-agent)
