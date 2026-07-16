@@ -87,13 +87,19 @@ class CkanClient:
                 obj_method(obj=obj, allowed_kwargs=self._obj_params[obj], client=self),
             )
 
+    def _assert_auth(self):
+        if not self._authenticated:
+            raise PermissionError(
+                "This method requires authentication, please specify your API key in the Client"
+            )
+
 
 def create_method(obj: str, allowed_kwargs: dict, client: "CkanClient") -> Callable:
-    def _m(**kwargs) -> "Organization | Package | Resource":
-        check_kwargs(kwargs, allowed_kwargs)
+    def _m(payload: dict) -> "Organization | Package | Resource":
+        check_kwargs(payload, allowed_kwargs)
         if client.verbose:
-            logging.info(f"🆕 Creating a new {obj} with {kwargs}")
-        resp = getattr(client.rckan.action, f"{obj}_create")(**kwargs)
+            logging.info(f"🆕 Creating a new {obj} with {payload}")
+        resp = getattr(client.rckan.action, f"{obj}_create")(**payload)
         match obj:
             # slightly overkill but futureproof
             case "package":
