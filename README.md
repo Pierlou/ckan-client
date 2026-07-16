@@ -60,5 +60,5 @@ res.delete()
 
 Upon client creation, additional arguments can be used:
 - `user_agent`: to set a custom user-agent (defaults to a version specific user-agent)
-- `verbose`: whether to display logs when methods are called
-- `fetch`: whether to retrieve the objects' metadata on instanciation. Set to `False` to prevent API calls if you only aim at modifiying object.
+- `verbose`: whether to display logs when methods are called (defaults to `True`)
+- `fetch`: whether to retrieve the objects' metadata on instanciation. Set to `False` to prevent API calls if you only aim at modifiying object (defaults to `True`)
