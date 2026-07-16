@@ -17,7 +17,7 @@ pip install ckan-client
 from ckan_client import CkanClient
 
 ckanc = CkanClient(
-  "https://ckan.data.example.fr",  # the base URL of your platform
+  "https://ckan.data.example.fr",  # the address of your platform
   apikey="SUP3R_S3CR3T",  # your API key (optional, only if you want to modify objects on the platform)
 )
 ```
@@ -42,3 +42,23 @@ These objects are accessible from one another:
 - a `Package` has the attributes `resources` (list of `Resource`) and `organization`
 - a `Resource` has the attribute `package`
 - an `Organization` has the attributes `packages` (list of `Package`)
+
+3. Modify objects
+
+If you have filled in your API key in the client, you have the posibility to modify objects (depending on your rights on the platform). All objects have the `patch` and `delete` methods:
+
+```python
+# the patch method allows to modify as many fields of the object as needed, without touching the ones that are not mentionned
+pack.patch({"description": "More detailed description", "notes": "Additional insights"})
+# the package is updated on the platform, and the pack variable also has the new fields value
+
+# the delete method takes no argument, it deletes the object on the platform
+res.delete()
+```
+
+## ?! Advanced features
+
+Upon client creation, additional arguments can be used:
+- `user_agent`: to set a custom user-agent (defaults to a version specific user-agent)
+- `verbose`: whether to display logs when methods are called
+- `fetch`: whether to retrieve the objects' metadata on instanciation. Set to `False` to prevent API calls if you only aim at modifiying object.
