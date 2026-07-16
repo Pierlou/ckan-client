@@ -73,9 +73,7 @@ class CkanClient:
         for obj in self._obj:
             # fetching the valid kwargs from the doc endpoints
             self._obj_params[obj] = build_params(
-                requests.get(f"{address}/api/3/action/help_show?name={obj}_create").json()[
-                    "result"
-                ]
+                requests.get(f"{address}/api/3/action/help_show?name={obj}_create").json()["result"]
             )
             # re-implements the object creation with a stricter kwargs check
             setattr(
