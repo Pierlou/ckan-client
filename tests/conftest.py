@@ -1,6 +1,9 @@
 import json
 
+import pytest
 import responses
+
+from ckan_client import CkanClient
 
 
 CKAN_URL = "https://ckan.data.example.fr"
@@ -24,6 +27,12 @@ with open("tests/help_data.json", "r") as f:
 
 
 @pytest.fixture
-def mocked_responses():
+def mock_help():
     with responses.RequestsMock() as rsps:
+        for obj in CkanClient._obj:
+            rsps.get(
+                f"{CKAN_URL}/api/3/action/help_show?name={obj}_create",
+                json=help_data[obj],
+                status=200,
+            )
         yield rsps
