@@ -74,3 +74,8 @@ def test_orga_create_package(mock_help):
     assert pack.id == package_metadata["id"]
     for k, v in payload.items():
         assert getattr(pack, k) == v
+    
+    # test to pass org_owner, should fail
+    with pytest.raises(Exception):
+        # the help isn't accurate, but an exception is still raised
+        pack = orga.create_package(payload | {"org_owner": "another-org"})
