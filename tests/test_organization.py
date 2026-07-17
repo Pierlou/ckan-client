@@ -1,10 +1,9 @@
 from unittest.mock import Mock
 
 import pytest
+from conftest import CKAN_URL, ORGANIZATION_ID, organization_metadata, package_metadata
 
 from ckan_client import CkanClient, Organization, Package
-
-from conftest import CKAN_URL, ORGANIZATION_ID, package_metadata, organization_metadata
 
 
 def test_orga_read_only(mock_help):
@@ -55,12 +54,17 @@ def test_orga_packages(mock_help):
     ckanc = CkanClient(CKAN_URL)
     ckanc.rckan.action.organization_show = Mock(return_value=organization_metadata)
     orga = ckanc.organization(ORGANIZATION_ID)
-    nb_packages = 3 
+    nb_packages = 3
     ckanc.rckan.action.organization_show = Mock(
-        return_value=organization_metadata | {"packages": [package_metadata for _ in range(nb_packages)]}
+        return_value=organization_metadata
+        | {"packages": [package_metadata for _ in range(nb_packages)]}
     )
     packs = orga.packages
-    assert isinstance(packs, list) and len(packs) == nb_packages and all(isinstance(p, Package) for p in packs)
+    assert (
+        isinstance(packs, list)
+        and len(packs) == nb_packages
+        and all(isinstance(p, Package) for p in packs)
+    )
 
 
 def test_orga_create_package(mock_help):
@@ -74,7 +78,7 @@ def test_orga_create_package(mock_help):
     assert pack.id == package_metadata["id"]
     for k, v in payload.items():
         assert getattr(pack, k) == v
-    
+
     # test to pass org_owner, should fail
     with pytest.raises(Exception):
         # the help isn't accurate, but an exception is still raised

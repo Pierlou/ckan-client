@@ -1,8 +1,7 @@
 import pytest
+from conftest import CKAN_URL
 
 from ckan_client.client import CkanClient, check_kwargs
-
-from conftest import CKAN_URL
 
 
 @pytest.mark.parametrize(
@@ -70,7 +69,6 @@ def test_client(mock_help, apikey):
         assert f"create_{obj}" in dir(ckanc)
         assert obj in ckanc._obj_params
         assert all(
-            isinstance(v, dict)
-            and all(k in v for k in ["type", "description", "optional"])
+            isinstance(v, dict) and all(k in v for k in ["type", "description", "optional"])
             for v in ckanc._obj_params[obj].values()
         )

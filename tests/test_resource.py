@@ -1,10 +1,9 @@
 from unittest.mock import Mock
 
 import pytest
-
-from ckan_client import CkanClient, Resource, Package
-
 from conftest import CKAN_URL, RESOURCE_ID, package_metadata, resource_metadata
+
+from ckan_client import CkanClient, Package, Resource
 
 
 def test_resource_read_only(mock_help):

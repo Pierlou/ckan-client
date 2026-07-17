@@ -5,7 +5,6 @@ import responses
 
 from ckan_client import CkanClient
 
-
 CKAN_URL = "https://ckan.data.example.fr"
 ORGANIZATION_ID = "e9d6a73f-dd4d-4c89-abe4-be24d31b9239"
 PACKAGE_ID = "e585b3d4-3c5b-4b95-948e-6f6ec27e922a"

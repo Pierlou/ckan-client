@@ -1,10 +1,15 @@
 from unittest.mock import Mock
 
 import pytest
+from conftest import (
+    CKAN_URL,
+    PACKAGE_ID,
+    organization_metadata,
+    package_metadata,
+    resource_metadata,
+)
 
 from ckan_client import CkanClient, Organization, Package, Resource
-
-from conftest import CKAN_URL, PACKAGE_ID, package_metadata, organization_metadata, resource_metadata
 
 
 def test_package_read_only(mock_help):
@@ -66,7 +71,11 @@ def test_package_resources(mock_help):
     ckanc.rckan.action.package_show = Mock(return_value=package_metadata)
     pack = ckanc.package(PACKAGE_ID)
     resources = pack.resources
-    assert isinstance(resources, list) and len(resources) == len(package_metadata["resources"]) and all(isinstance(r, Resource) for r in resources)
+    assert (
+        isinstance(resources, list)
+        and len(resources) == len(package_metadata["resources"])
+        and all(isinstance(r, Resource) for r in resources)
+    )
 
 
 def test_package_create_resource(mock_help):
@@ -74,7 +83,9 @@ def test_package_create_resource(mock_help):
     ckanc.rckan.action.package_show = Mock(return_value=package_metadata)
     pack = ckanc.package(PACKAGE_ID)
     payload = {"name": "brand_new_resource", "upload": "pretend it's a file"}
-    ckanc.rckan.action.resource_create = Mock(return_value=payload | {"id": resource_metadata["id"]})
+    ckanc.rckan.action.resource_create = Mock(
+        return_value=payload | {"id": resource_metadata["id"]}
+    )
     res = pack.create_resource(payload)
     assert isinstance(res, Resource)
     assert res.id == resource_metadata["id"]
