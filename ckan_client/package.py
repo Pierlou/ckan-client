@@ -37,5 +37,5 @@ class Package(BaseObject):
         check_kwargs(payload, self._client._obj_params["resource"])
         if self._client.verbose:
             logging.info(f"🆕 Creating a new resource with {payload}")
-        resp = self._client.rckan.action.resoure_create(**(payload | {"package_id": self.id}))
+        resp = self._client.rckan.action.resource_create(**(payload | {"package_id": self.id}))
         return Resource(id=resp["id"], _from_response=resp, _client=self._client)
