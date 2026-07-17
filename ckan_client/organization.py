@@ -23,7 +23,7 @@ class Organization(BaseObject):
             for p in self._client.rckan.action.organization_show(
                 id=self.id,
                 include_datasets=True,
-            )
+            )["packages"]
         ]
 
     def create_package(self, payload: dict) -> "Package":

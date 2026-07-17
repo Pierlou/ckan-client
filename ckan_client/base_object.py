@@ -20,7 +20,7 @@ class BaseObject:
         elif self._client.fetch:
             self._fetch_metadata()
 
-    def _fetch_metadata(self):
+    def _fetch_metadata(self) -> None:
         # not the best if the object is updated by another means in between but fair enough
         try:
             attrs = object.__getattribute__(self, "_attrs")
@@ -37,7 +37,7 @@ class BaseObject:
             )(id=object.__getattribute__(self, "id")),
         )
 
-    def _raise_if_deleted(self):
+    def _raise_if_deleted(self) -> None:
         if self._deleted:
             raise TypeError(f"This {self._name} has been deleted")
 
