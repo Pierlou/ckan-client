@@ -49,13 +49,13 @@ If you have filled in your API key in the client, you have the posibility to mod
 
 From the client, it is possible to create all available objects:
 ```python
-org = client.create_organization({"name": "my-orga"})  # this creates an instance of Organization
-pack = client.create_package({"name": "new-dataset", "owner_org": "my-orga"})  # this creates an instance of Package
-res = client.create_resource({"name": "first-resource", "package_id": "new-dataset", "upload": open("file.csv", "rb")})  # this creates an instance of Resource
+org = ckanc.create_organization({"name": "my-orga"})  # this creates an instance of Organization
+pack = ckanc.create_package({"name": "new-dataset", "owner_org": "my-orga"})  # this creates an instance of Package
+res = ckanc.create_resource({"name": "first-resource", "package_id": "new-dataset", "upload": open("file.csv", "rb")})  # this creates an instance of Resource
 ```
 It is also possible to create objects from their "parent":
 ```python
-org = client.create_organization({"name": "my-orga"})
+org = ckanc.create_organization({"name": "my-orga"})
 pack = org.create_package({"name": "new-dataset"})  # the package is attached to the organization, owner_org is not needed
 res = pack.create_resource({"name": "first-resource", "upload": open("file.csv", "rb")})  #  the resource is attached to the package, package_id is not needed
 ```

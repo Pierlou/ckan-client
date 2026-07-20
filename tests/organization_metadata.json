@@ -1,0 +1,38 @@
+{
+    "approval_status": "approved",
+    "created": "2026-03-16T10:47:39.394285",
+    "description":"A short description.",
+    "display_name": "Orga",
+    "id": "e9d6a73f-dd4d-4c89-abe4-be24d31b9239",
+    "image_display_url": "",
+    "image_url": "",
+    "is_organization": true,
+    "name": "my-orga",
+    "num_followers": 0,
+    "package_count": 0,
+    "state": "active", 
+    "title": "ORGA",
+    "type": "organization",
+    "users": [
+        {
+            "about": "",
+            "activity_streams_email_notifications": false,
+            "capacity": "admin",
+            "created": "2026-03-13T13:07:48.787439",
+            "display_name": "Pierre Dupont",
+            "email_hash": "01eb9c862c6be293f2538d5b17f09152",
+            "fullname": "Pierre Dupont",
+            "id": "e530df26-0532-4615-9a4e-72bb2c2afc86",
+            "image_display_url": "",
+            "image_url": "",
+            "last_active": "2026-05-26T14:55:07.631955",
+            "name": "pierre-dupont-4500",
+            "number_created_packages": 3,
+            "state": "active",
+            "sysadmin": true
+        }
+    ],
+    "extras": [],
+    "tags": [],
+    "groups": []
+}

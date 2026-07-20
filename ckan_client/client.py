@@ -78,7 +78,7 @@ class CkanClient:
             # re-implements the object creation with a stricter kwargs check
             setattr(
                 self,
-                f"{obj}_create",
+                f"create_{obj}",
                 create_method(obj=obj, allowed_kwargs=self._obj_params[obj], client=self),
             )
             setattr(
