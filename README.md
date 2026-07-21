@@ -41,7 +41,7 @@ print(f"The package {pack.title} is attached to {pack.organization.title}")
 These objects are accessible from one another:
 - a `Package` has the attributes `resources` (list of `Resource`) and `organization`
 - a `Resource` has the attribute `package`
-- an `Organization` has the attributes `packages` (list of `Package`)
+- an `Organization` has the attribute `packages` (list of `Package`)
 
 3. Modify objects
 
