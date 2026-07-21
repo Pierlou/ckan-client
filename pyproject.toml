@@ -23,11 +23,11 @@ dev = [
 Source = "https://github.com/Pierlou/ckan-client"
 
 [build-system]
-requires = ["setuptools>=68", "wheel", "setuptools_scm"]
+requires = ["setuptools>=77", "wheel", "setuptools_scm"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools.package-data]
-csv_detective = ["CHANGELOG.md", "LICENSE", "README.md"]
+ckan_client = ["CHANGELOG.md", "LICENSE", "README.md"]
 
 [tool.setuptools_scm]
 version_scheme = "guess-next-dev"
