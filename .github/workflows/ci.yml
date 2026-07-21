@@ -42,3 +42,8 @@ jobs:
 
       - name: Build package
         run: uv build
+
+      - name: Install built wheel
+        run: |
+          uv venv /tmp/testenv
+          uv pip install --python /tmp/testenv/bin/python dist/*.whl
