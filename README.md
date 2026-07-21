@@ -33,9 +33,9 @@ org = ckanc.organization("my_org_name")  # this creates an instance of Organizat
 
 Then you can access each object's properties:
 ```python
-print(f"The package {pack.title} is attached to {pack.organization['title']}")
 print(f"The resource {res.name} was created at {res.created} and contains {res.format} data")
 print(f"The organization {org.title} has {len(org.packages)} packages")
+print(f"The package {pack.title} is attached to {pack.organization.title}")
 ```
 
 These objects are accessible from one another:
