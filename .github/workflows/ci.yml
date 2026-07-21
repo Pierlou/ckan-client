@@ -29,3 +29,16 @@ jobs:
       - name: Run tests
         run: |
           uv run pytest tests/
+
+  build:
+    needs: lint-and-test
+    runs-on: ubuntu-latest
+
+    container:
+      image: ghcr.io/astral-sh/uv:python3.14-bookworm
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build package
+        run: uv build
